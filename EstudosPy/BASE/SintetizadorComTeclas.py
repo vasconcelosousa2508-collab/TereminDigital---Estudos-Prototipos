@@ -3,9 +3,11 @@ import sounddevice as sd
 from pynput import keyboard
 
 amostragem = 44100
-frequencia = 440.0
-volume_atual = 0.0  # Controle direto
-fase = 0
+params = {
+    'freq': 440.0,
+    'vol': 3.0,
+    'fase': 0
+}
 
 notas = {
     'a': 261.63, 's': 293.66, 'd': 329.63, 'f': 349.23,
@@ -13,33 +15,27 @@ notas = {
 }
 
 def audio_callback(outdata, frames, time, status):
-    global fase, volume_atual
+    # Uso direto do dicionário, sem 'global'
+    indices = np.arange(frames) + params['fase']
     
-    indices = np.arange(frames) + fase
+    # SOM PURO: Sem rampas
+    outdata[:, 0] = params['vol'] * np.sin(2 * np.pi * params['freq'] * indices / amostragem)
     
-    # SOM PURO: Sem rampas, sem suavização. 
-    # Multiplicação direta do volume pela onda.
-    outdata[:, 0] = volume_atual * np.sin(2 * np.pi * frequencia * indices / amostragem)
-    
-    fase += frames
+    params['fase'] += frames
 
 def ao_pressionar(key):
-    global frequencia, volume_atual
     try:
         if key.char in notas:
-            frequencia = notas[key.char]
-            volume_atual = 0.5  # Valor bruto
+            params['freq'] = notas[key.char]
+            params['vol'] = 0.5  # Valor bruto
     except AttributeError:
         pass
 
 def ao_soltar(key):
-    global volume_atual
-    # Corta o som na hora
-    volume_atual = 0.0
+    params['vol'] = 0.0
     if key == keyboard.Key.esc:
         return False
 
-print("--- SOM PURO E DIRETO (SEM SUAVIZAÇÃO) ---")
 print("Toque A, S, D, F, G, H, J, K | Esc para sair")
 
 with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem):
