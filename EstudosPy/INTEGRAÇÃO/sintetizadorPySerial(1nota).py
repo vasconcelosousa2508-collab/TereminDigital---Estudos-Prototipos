@@ -39,11 +39,16 @@ def audio_callback(outdata, frames, time, status):
 with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem):
     while True:
         dados = porta.readline().decode('utf-8').strip()
+        
         if dados.isdigit(): 
-            valor = int(dados)
-            print(valor)
+            try:
+                valor = int(dados)
+                print(valor)
+            except ValueError:
+                valor = 0
+                print("Erro: Dado inválido")
             
-        if valor < limiteSombra:
-            volume_alvo = 1.5
-        else:
-            volume_alvo = 0.0
+            if valor < limiteSombra:
+                volume_alvo = 1.5
+            else:
+                volume_alvo = 0.0
