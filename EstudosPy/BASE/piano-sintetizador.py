@@ -10,9 +10,18 @@ volume_atual = 0.0
 fase = 0
 
 # Notas (Frequências reais)
+# Notas (Naturais e Sustenidos intercalados)
 notas = {
+    # Naturais
     'a': 261.63, 's': 293.66, 'd': 329.63, 'f': 349.23,
-    'g': 392.00, 'h': 440.00, 'j': 493.88, 'k': 523.25
+    'g': 392.00, 'h': 440.00, 'j': 493.88, 'k': 523.25,
+    
+    # Sustenidos (Teclas pretas - w, e, r, t, y)
+    'w': 277.18, # C#
+    'e': 311.13, # D#
+    'r': 369.99, # F#
+    't': 415.30, # G#
+    'y': 466.16  # A#
 }
 
 def audio_callback(outdata, frames, time, status):

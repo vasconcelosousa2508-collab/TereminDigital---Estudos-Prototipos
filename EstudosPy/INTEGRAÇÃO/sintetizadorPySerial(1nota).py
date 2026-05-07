@@ -44,6 +44,6 @@ with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem)
             print(valor)
             
         if valor < limiteSombra:
-            volume_alvo = 1.0
+            volume_alvo = 1.5
         else:
             volume_alvo = 0.0
