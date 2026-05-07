@@ -10,15 +10,21 @@ params = {
 }
 
 notas = {
+    # Naturais
     'a': 261.63, 's': 293.66, 'd': 329.63, 'f': 349.23,
-    'g': 392.00, 'h': 440.00, 'j': 493.88, 'k': 523.25, 'l': 587.33
+    'g': 392.00, 'h': 440.00, 'j': 493.88, 'k': 523.25,
+    
+    # Sustenidos (Teclas pretas - w, e, r, t, y)
+    'w': 277.18, # C#
+    'e': 311.13, # D#
+    'r': 369.99, # F#
+    't': 415.30, # G#
+    'y': 466.16  # A#
 }
 
 def audio_callback(outdata, frames, time, status):
-    # Uso direto do dicionário, sem 'global'
     indices = np.arange(frames) + params['fase']
     
-    # SOM PURO: Sem rampas
     outdata[:, 0] = params['vol'] * np.sin(2 * np.pi * params['freq'] * indices / amostragem)
     
     params['fase'] += frames
@@ -27,7 +33,7 @@ def ao_pressionar(key):
     try:
         if key.char in notas:
             params['freq'] = notas[key.char]
-            params['vol'] = 0.5  # Valor bruto
+            params['vol'] = 0.8  # Valor bruto
     except AttributeError:
         pass
 
