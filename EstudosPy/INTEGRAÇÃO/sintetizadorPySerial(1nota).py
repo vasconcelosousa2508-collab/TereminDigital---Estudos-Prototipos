@@ -15,44 +15,41 @@ except:
 
 # Configurações de Áudio
 amostragem = 44100
-frequencia = 440.0
-volume_alvo = 0.0 
-
-volume_atual = 0.0
-fase = 0
-
 limiteSombra = 250
 
+params = {
+    'freq': 440.0,
+    'vol_alvo': 0.0,
+    'vol_atual': 0.0,
+    'fase': 0
+}
+
 def audio_callback(outdata, frames, time, status):
-    global fase, volume_atual, volume_alvo
+    indices = np.arange(frames) + params['fase']
     
-    indices = np.arange(frames) + fase
+    # Suavização para evitar estalos
+    params['vol_atual'] += 0.1 * (params['vol_alvo'] - params['vol_atual'])
     
-    # Suavização simples para evitar estalos
-    # O volume atual tenta "alcançar" o volume alvo gradualmente
-    volume_atual = volume_atual + 0.1 * (volume_alvo - volume_atual)
-    
-    onda = volume_atual * np.sin(2 * np.pi * frequencia * indices / amostragem)
+    onda = params['vol_atual'] * np.sin(2 * np.pi * params['freq'] * indices / amostragem)
     outdata[:, 0] = onda
-    fase += frames
+    params['fase'] += frames
 
 def ao_pressionar(key):
     if key == keyboard.Key.esc:
         return False
 
-
 with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem):
     with keyboard.Listener(on_press=ao_pressionar) as listener:
-
         while listener.running:
             dados = porta.readline().decode('utf-8').strip()
             if dados.isdigit():
                 try:
                     valor = int(dados)
                     print(valor)
+                    
                     if valor < limiteSombra:
-                        volume_alvo = 2.0 
+                        params['vol_alvo'] = 2.0 
                     else:
-                        volume_alvo = 0.0
-                except ValueError:
-                    print("Erro: Dado inválido")
+                        params['vol_alvo'] = 0.0
+                except:
+                    pass
