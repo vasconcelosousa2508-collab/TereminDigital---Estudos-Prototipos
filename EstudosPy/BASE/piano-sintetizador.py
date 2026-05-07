@@ -4,10 +4,13 @@ from pynput import keyboard
 
 # Configurações
 amostragem = 44100
-frequencia = 440.0
-volume_alvo = 0.0 
-volume_atual = 0.0
-fase = 0
+
+params = {
+    'freq': 440.0,
+    'vol_alvo': 0.0,
+    'vol_atual': 0.0,
+    'fase': 0
+}
 
 # Notas (Frequências reais)
 # Notas (Naturais e Sustenidos intercalados)
@@ -25,30 +28,25 @@ notas = {
 }
 
 def audio_callback(outdata, frames, time, status):
-    global fase, volume_atual, volume_alvo
+    indices = np.arange(frames) + params['fase']
     
-    indices = np.arange(frames) + fase
+    # Suavização usando o dicionário
+    params['vol_atual'] += 0.1 * (params['vol_alvo'] - params['vol_atual'])
     
-    # Suavização simples para evitar estalos no volume 2.0
-    # O volume atual tenta "alcançar" o volume alvo gradualmente
-    volume_atual = volume_atual + 0.1 * (volume_alvo - volume_atual)
-    
-    onda = volume_atual * np.sin(2 * np.pi * frequencia * indices / amostragem)
+    onda = params['vol_atual'] * np.sin(2 * np.pi * params['freq'] * indices / amostragem)
     outdata[:, 0] = onda
-    fase += frames
+    params['fase'] += frames
 
 def ao_pressionar(key):
-    global frequencia, volume_alvo
     try:
         if key.char in notas:
-            frequencia = notas[key.char]
-            volume_alvo = 2.0  # Arrochado no 2.0!
+            params['freq'] = notas[key.char]
+            params['vol_alvo'] = 0.8 
     except AttributeError:
         pass
 
 def ao_soltar(key):
-    global volume_alvo
-    volume_alvo = 0.0
+    params['vol_alvo'] = 0.0
     if key == keyboard.Key.esc:
         return False
 
