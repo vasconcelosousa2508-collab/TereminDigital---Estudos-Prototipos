@@ -30,7 +30,7 @@ notas = {
 def audio_callback(outdata, frames, time, status):
     indices = np.arange(frames) + params['fase']
     
-    # Suavização usando o dicionário
+    # Suavização 
     params['vol_atual'] += 0.1 * (params['vol_alvo'] - params['vol_atual'])
     
     onda = params['vol_atual'] * np.sin(2 * np.pi * params['freq'] * indices / amostragem)
