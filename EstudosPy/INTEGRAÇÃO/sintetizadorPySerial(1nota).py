@@ -3,6 +3,7 @@
 import serial
 import numpy as np
 import sounddevice as sd
+from pynput import keyboard
 
 
 # Configurações da Serial
@@ -35,20 +36,23 @@ def audio_callback(outdata, frames, time, status):
     outdata[:, 0] = onda
     fase += frames
 
+def ao_pressionar(key):
+    if key == keyboard.Key.esc:
+        return False
+
 
 with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem):
-    while True:
-        dados = porta.readline().decode('utf-8').strip()
-        
-        if dados.isdigit(): 
-            try:
-                valor = int(dados)
-                print(valor)
-            except ValueError:
-                valor = 0
-                print("Erro: Dado inválido")
-            
-            if valor < limiteSombra:
-                volume_alvo = 1.5
-            else:
-                volume_alvo = 0.0
+    with keyboard.Listener(on_press=ao_pressionar) as listener:
+
+        while listener.running:
+            dados = porta.readline().decode('utf-8').strip()
+            if dados.isdigit():
+                try:
+                    valor = int(dados)
+                    print(valor)
+                    if valor < limiteSombra:
+                        volume_alvo = 2.0 
+                    else:
+                        volume_alvo = 0.0
+                except ValueError:
+                    print("Erro: Dado inválido")
