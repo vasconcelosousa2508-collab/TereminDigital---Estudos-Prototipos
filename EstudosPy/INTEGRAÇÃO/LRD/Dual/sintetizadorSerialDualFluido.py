@@ -6,7 +6,8 @@ from pynput import keyboard
 #config
 porta = '/dev/ttyACM0'
 amostragem = 44100
-limiteSombra = 380
+limiteSombra = 400
+volumeMaximo = 1.0
 
 params = {
     'freq_alvo': 261.63,
@@ -54,33 +55,32 @@ def audio_callback(outdata, frames, time, status):
     
     params['fase'] = (arg[-1] + (2 * np.pi * f / amostragem)) % (2 * np.pi)
 
-def processar(leitura1, leitura2):
+def processar(leitura1 , leitura2):
     if leitura1 < limiteSombra:
+        diferenca = limiteSombra - leitura1
+        params['vol_alvo'] = (diferenca / limiteSombra) * volumeMaximo
         
         for limiar, frequencia in ESCALA_MUSICAL:
-            if leitura < limiar:
-                params['freq_alvo'] = frequencia
-                break
-    else:
-        params['vol_alvo'] = 0.0
-    
-    if leitura2 < limiteSombra:
-        for limiar, frequencia in ESCALA_MUSICAL:
-            if leitura2 < limiar:
-                params['freq_alvo'] = frequencia
-                break
+                if leitura2 < limiar:
+                    params['freq_alvo'] = frequencia
+                    break
     else:
         params['vol_alvo'] = 0.0
 
+def ao_pressionar(key):
+    if key == keyboard.Key.esc:
+        return False
 
-# with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem):
-#     with keyboard.Listener(on_press=ao_pressionar) as listener:
-#         while listener.running:
-#              linha = porta.readline().decode('utf-8', errors='ignore').strip()
-#              dados = linha.split(',')
+
+with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem):
+    with keyboard.Listener(on_press=ao_pressionar) as listener:
+        while listener.running:
+             linha = porta.readline().decode('utf-8', errors='ignore').strip()
+             dados = linha.split(',')
              
-#              if len(dados) == 2: 
-#                  valor1 = dados[0]
-#                  valor2 = dados[1]
-#                  if valor1.isdigit() and valor2.isdigit():
-#                      print(f"Freq: {valor1} | Vol: {valor2}")
+             if len(dados) == 2: 
+                 valor1 = dados[0]
+                 valor2 = dados[1]
+                 if valor1.isdigit() and valor2.isdigit():
+                    print(f"Freq: {valor1} | Vol: {valor2}")
+                    processar(int(valor1), int(valor2))
