@@ -9,7 +9,6 @@ void setup() {
 }
 
 void loop() {
-  // Lê a luz do sensor de nota e a luz do sensor de sensibilidade
   int leituraLuz = analogRead(pinoLDR_Nota);
   int ajusteSensibilidade = analogRead(pinoLDR_Sens);
 
