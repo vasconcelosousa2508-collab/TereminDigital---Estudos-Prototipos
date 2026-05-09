@@ -3,7 +3,7 @@ import numpy as np
 import sounddevice as sd
 from pynput import keyboard
 
-# --- 1. CONFIGURAÇÕES ---
+#config
 porta = '/dev/ttyACM0'
 amostragem = 44100
 limiteSombra = 380
