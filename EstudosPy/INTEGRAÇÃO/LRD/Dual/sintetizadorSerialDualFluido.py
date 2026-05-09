@@ -28,3 +28,42 @@ try:
 except:
     print("Erro: Verifique se o Arduino está na porta /dev/ttyACM0")
     exit()
+
+while True:
+    linha = porta.readline().decode('utf-8', errors='ignore').strip()
+    dados = linha.split(',')
+             
+    if len(dados) == 2: 
+        valor1 = dados[0]
+        valor2 = dados[1]
+        if valor1.isdigit() and valor2.isdigit():
+            print(f"Freq: {valor1} | Vol: {valor2}")
+
+
+# def audio_callback(outdata, frames, time, status):
+#     t = np.arange(frames) / amostragem
+    
+#     params['vol_atual'] += 0.1 * (params['vol_alvo'] - params['vol_atual'])
+#     params['freq_atual'] += 0.05 * (params['freq_alvo'] - params['freq_atual'])
+    
+#     f = params['freq_atual']
+#     v = params['vol_atual']
+    
+#     arg = 2 * np.pi * f * t + params['fase']
+#     outdata[:, 0] = v * np.sin(arg)
+    
+#     params['fase'] = (arg[-1] + (2 * np.pi * f / amostragem)) % (2 * np.pi)
+
+
+
+# with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem):
+#     with keyboard.Listener(on_press=ao_pressionar) as listener:
+#         while listener.running:
+#              linha = porta.readline().decode('utf-8', errors='ignore').strip()
+#              dados = linha.split(',')
+             
+#              if len(dados) == 2: 
+#                  valor1 = dados[0]
+#                  valor2 = dados[1]
+#                  if valor1.isdigit() and valor2.isdigit():
+#                      print(f"Freq: {valor1} | Vol: {valor2}")
