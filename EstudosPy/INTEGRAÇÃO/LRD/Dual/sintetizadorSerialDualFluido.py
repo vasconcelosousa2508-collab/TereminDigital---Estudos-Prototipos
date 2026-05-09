@@ -74,13 +74,20 @@ def ao_pressionar(key):
 
 with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem):
     with keyboard.Listener(on_press=ao_pressionar) as listener:
-        while listener.running:
-             linha = porta.readline().decode('utf-8', errors='ignore').strip()
-             dados = linha.split(',')
-             
-             if len(dados) == 2: 
-                 valor1 = dados[0]
-                 valor2 = dados[1]
-                 if valor1.isdigit() and valor2.isdigit():
-                    print(f"Freq: {valor1} | Vol: {valor2}")
-                    processar(int(valor1), int(valor2))
+        print("Sintetizador rodando... Pressione ESC para sair.")
+        try:
+            while listener.running:
+                linha = porta.readline().decode('utf-8', errors='ignore').strip()
+                dados = linha.split(',')
+                
+                if len(dados) == 2: 
+                    v1, v2 = dados[0], dados[1]
+                    if v1.isdigit() and v2.isdigit():
+                        # Usamos try aqui para ignorar leituras malucas ocasionais
+                        try:
+                            print(f"Freq: {v1} | Vol: {v2}")
+                            processar(int(v1), int(v2))
+                        except ValueError:
+                            continue
+        except Exception as e:
+            print(f"\nOcorreu um erro: {e}")
