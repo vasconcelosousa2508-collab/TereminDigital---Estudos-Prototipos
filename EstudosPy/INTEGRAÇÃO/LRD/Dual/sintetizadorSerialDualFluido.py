@@ -7,7 +7,7 @@ from pynput import keyboard
 porta = '/dev/ttyACM0'
 amostragem = 44100
 limiteSombra = 400
-volumeMaximo = 1.0
+volumeMaximo = 2.0
 
 params = {
     'freq_alvo': 261.63,
@@ -30,15 +30,15 @@ except:
     print("Erro: Verifique se o Arduino está na porta /dev/ttyACM0")
     exit()
 
-while True:
-    linha = porta.readline().decode('utf-8', errors='ignore').strip()
-    dados = linha.split(',')
+# while True:
+#     linha = porta.readline().decode('utf-8', errors='ignore').strip()
+#     dados = linha.split(',')
              
-    if len(dados) == 2: 
-        valor1 = dados[0]
-        valor2 = dados[1]
-        if valor1.isdigit() and valor2.isdigit():
-            print(f"Freq: {valor1} | Vol: {valor2}")
+#     if len(dados) == 2: 
+#         valor1 = dados[0]
+#         valor2 = dados[1]
+#         if valor1.isdigit() and valor2.isdigit():
+#             print(f"Freq: {valor1} | Vol: {valor2}")
 
 
 def audio_callback(outdata, frames, time, status):
