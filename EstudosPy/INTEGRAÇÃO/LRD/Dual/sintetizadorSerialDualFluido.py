@@ -40,20 +40,37 @@ while True:
             print(f"Freq: {valor1} | Vol: {valor2}")
 
 
-# def audio_callback(outdata, frames, time, status):
-#     t = np.arange(frames) / amostragem
+def audio_callback(outdata, frames, time, status):
+    t = np.arange(frames) / amostragem
     
-#     params['vol_atual'] += 0.1 * (params['vol_alvo'] - params['vol_atual'])
-#     params['freq_atual'] += 0.05 * (params['freq_alvo'] - params['freq_atual'])
+    params['vol_atual'] += 0.1 * (params['vol_alvo'] - params['vol_atual'])
+    params['freq_atual'] += 0.05 * (params['freq_alvo'] - params['freq_atual'])
     
-#     f = params['freq_atual']
-#     v = params['vol_atual']
+    f = params['freq_atual']
+    v = params['vol_atual']
     
-#     arg = 2 * np.pi * f * t + params['fase']
-#     outdata[:, 0] = v * np.sin(arg)
+    arg = 2 * np.pi * f * t + params['fase']
+    outdata[:, 0] = v * np.sin(arg)
     
-#     params['fase'] = (arg[-1] + (2 * np.pi * f / amostragem)) % (2 * np.pi)
+    params['fase'] = (arg[-1] + (2 * np.pi * f / amostragem)) % (2 * np.pi)
 
+def processar(leitura1, leitura2):
+    if leitura1 < limiteSombra:
+        
+        for limiar, frequencia in ESCALA_MUSICAL:
+            if leitura < limiar:
+                params['freq_alvo'] = frequencia
+                break
+    else:
+        params['vol_alvo'] = 0.0
+    
+    if leitura2 < limiteSombra:
+        for limiar, frequencia in ESCALA_MUSICAL:
+            if leitura2 < limiar:
+                params['freq_alvo'] = frequencia
+                break
+    else:
+        params['vol_alvo'] = 0.0
 
 
 # with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem):
