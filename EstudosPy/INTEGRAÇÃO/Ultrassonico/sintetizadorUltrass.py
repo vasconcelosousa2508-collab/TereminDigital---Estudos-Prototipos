@@ -81,7 +81,6 @@ with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem)
                             processar(int(v1), int(v2))
                             
         except Exception as e:
-            print(f"\nOcorreu um erro no loop: {e}")
+            print(f"\nErro: {e}")
         finally:
             porta.close()
-            print("Conexão serial encerrada.")
