@@ -1,32 +1,46 @@
+// Definições de pinos 
+const int TRIG1 = 9;
+const int ECHO1 = 10;
+const int TRIG2 = 7;
+const int ECHO2 = 6;
+
+const int LIMITE_MAX = 30;
+
 void setup() {
   Serial.begin(9600);
 
-  // Sensor1
-  pinMode(9, OUTPUT); // Trig na porta 9
-  pinMode(10, INPUT); // Echo na porta 10
-
-  //Sensor2
-  pinMode(7, OUTPUT); // Trig na porta 9
-  pinMode(6, INPUT); // Echo na porta 10
+  pinMode(TRIG1, OUTPUT);
+  pinMode(ECHO1, INPUT);
+  
+  pinMode(TRIG2, OUTPUT);
+  pinMode(ECHO2, INPUT);
 }
 
 void loop() {
-  // Sensor1
-  digitalWrite(9, LOW);  delayMicroseconds(2);
-  digitalWrite(9, HIGH); delayMicroseconds(10);
-  digitalWrite(9, LOW);
+  // Sensor 1
+  digitalWrite(TRIG1, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG1, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG1, LOW);
+  long tempo1 = pulseIn(ECHO1, HIGH);
+  int d1 = tempo1 * 0.034 / 2;
 
-  long tempo1 = pulseIn(10, HIGH);
-  int distancia1 = tempo1 * 0.034 / 2;
+  // Sensor 2
+  digitalWrite(TRIG2, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG2, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG2, LOW);
+  long tempo2 = pulseIn(ECHO2, HIGH);
+  int d2 = tempo2 * 0.034 / 2;
   
-  //Sensor2
-  digitalWrite(7, LOW);  delayMicroseconds(2);
-  digitalWrite(6, HIGH); delayMicroseconds(10);
-  digitalWrite(7, LOW);
+  int enviaD1 = (d1 > 0 && d1 <= LIMITE_MAX) ? d1 : 999;
+  int enviaD2 = (d2 > 0 && d2 <= LIMITE_MAX) ? d2 : 999;
 
-  long tempo2 = pulseIn(6, HIGH);
-  int distancia2 = tempo2 * 0.034 / 2;
+  Serial.print(enviaD1);
+  Serial.print(",");
+  Serial.println(enviaD2);
 
-  Serial.print(distancia1);  Serial.print(","); Serial.println(distancia2); 
-  delay(250);
+  delay(50); 
 }
