@@ -57,15 +57,15 @@ def audio_callback(outdata, frames, time, status):
     
     params['fase'] = (arg[-1] + (2 * np.pi * f / amostragem)) % (2 * np.pi)
 
-def processar(leitura1 , leitura2):
-    if leitura1 < limiteDistancia:
+def processar(leitura1, leitura2):
+    if leitura1 <= limiteDistancia:
         diferenca = limiteDistancia - leitura1
         params['vol_alvo'] = (diferenca / limiteDistancia) * volumeMaximo
         
         for limiar, frequencia in ESCALA_MUSICAL:
-                if leitura2 < limiar:
-                    params['freq_alvo'] = frequencia
-                    break
+            if leitura2 < limiar:
+                params['freq_alvo'] = frequencia
+                break
     else:
         params['vol_alvo'] = 0.0
 
