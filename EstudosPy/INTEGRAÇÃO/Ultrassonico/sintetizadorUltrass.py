@@ -5,7 +5,7 @@ from pynput import keyboard
 
 porta = '/dev/ttyACM0'
 amostragem = 44100
-limiteDistancia = 30
+limiteDistancia = 45
 volumeMaximo = 1.0
 
 params = {
