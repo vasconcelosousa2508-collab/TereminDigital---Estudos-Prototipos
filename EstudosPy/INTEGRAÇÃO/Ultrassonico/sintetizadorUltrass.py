@@ -3,9 +3,10 @@ import numpy as np
 import sounddevice as sd
 from pynput import keyboard
 
-porta = '/dev/ttyACM0'
+# --- CONFIGURAÇÕES ---
+porta_config = '/dev/ttyACM0' # String para a conexão inicial
 amostragem = 44100
-limiteDistancia = 45
+limiteDistancia = 45 
 volumeMaximo = 1.0
 
 params = {
@@ -16,6 +17,7 @@ params = {
     'fase': 0.0
 }
 
+# Escala Pentatônica espalhada em 45cm
 ESCALA_MUSICAL = [
     (8, 220.00),   # Lá
     (14, 261.63),  # Dó
@@ -27,26 +29,16 @@ ESCALA_MUSICAL = [
 ]
 
 try:
-    porta = serial.Serial(porta, 9600, timeout=0.05)
+    porta = serial.Serial(porta_config, 9600, timeout=0.05)
 except:
-    print("Erro: Verifique se o Arduino está na porta /dev/ttyACM0")
+    print(f"Erro: Verifique se o Arduino está na porta {porta_config}")
     exit()
-
-# while True:
-#     linha = porta.readline().decode('utf-8', errors='ignore').strip()
-#     dados = linha.split(',')
-             
-#     if len(dados) == 2: 
-#         valor1 = dados[0]
-#         valor2 = dados[1]
-#         if valor1.isdigit() and valor2.isdigit():
-#             print(f"Freq: {valor1} | Vol: {valor2}")
 
 def audio_callback(outdata, frames, time, status):
     t = np.arange(frames) / amostragem
     
     params['vol_atual'] += 0.1 * (params['vol_alvo'] - params['vol_atual'])
-    params['freq_atual'] += 0.05 * (params['freq_alvo'] - params['freq_atual'])
+    params['freq_atual'] += 0.08 * (params['freq_alvo'] - params['freq_atual'])
     
     f = params['freq_atual']
     v = params['vol_atual']
@@ -73,21 +65,23 @@ def ao_pressionar(key):
     if key == keyboard.Key.esc:
         return False
     
+
 with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem):
     with keyboard.Listener(on_press=ao_pressionar) as listener:
-        print("Sintetizador rodando... Pressione ESC para sair.")
+        print(f"Sintetizador 45cm rodando... (Escala Lá Menor) | ESC para sair.")
         try:
             while listener.running:
                 linha = porta.readline().decode('utf-8', errors='ignore').strip()
-                dados = linha.split(',')
-                
-                if len(dados) == 2: 
-                    v1, v2 = dados[0], dados[1]
-                    if v1.isdigit() and v2.isdigit():
-                        try:
+                if ',' in linha:
+                    dados = linha.split(',')
+                    if len(dados) == 2:
+                        v1, v2 = dados[0], dados[1]
+                        if v1.isdigit() and v2.isdigit():
                             # print(f"Freq: {v1} | Vol: {v2}")
                             processar(int(v1), int(v2))
-                        except ValueError:
-                            continue
+                            
         except Exception as e:
-            print(f"\nOcorreu um erro: {e}")
+            print(f"\nOcorreu um erro no loop: {e}")
+        finally:
+            porta.close()
+            print("Conexão serial encerrada.")
