@@ -42,5 +42,5 @@ void loop() {
   Serial.print(",");
   Serial.println(enviaD2);
 
-  delay(50); 
+  delay(30); 
 }
