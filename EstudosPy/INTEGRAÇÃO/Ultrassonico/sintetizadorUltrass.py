@@ -19,9 +19,6 @@ params = {
 ESCALA_MUSICAL = [
     (5, 261.63),  # Do
     (8, 293.66),  # Re
-    (11, 329.63), # Mi
-    (14, 349.23), # Fa
-    (17, 392.00), # Sol
     (20, 440.00), # La
     (23, 493.88), # Si
     (float('inf'), 523.25) # Do2
@@ -59,13 +56,14 @@ def audio_callback(outdata, frames, time, status):
 
 def processar(leitura1, leitura2):
     if leitura1 <= limiteDistancia:
-        diferenca = limiteDistancia - leitura1
-        params['vol_alvo'] = (diferenca / limiteDistancia) * volumeMaximo
+        proporcao = (limiteDistancia - leitura1) / limiteDistancia
+        params['vol_alvo'] = (proporcao ** 2) * volumeMaximo
         
-        for limiar, frequencia in ESCALA_MUSICAL:
-            if leitura2 < limiar:
-                params['freq_alvo'] = frequencia
-                break
+        if leitura2 <= limiteDistancia:
+            for limiar, frequencia in ESCALA_MUSICAL:
+                if leitura2 < limiar:
+                    params['freq_alvo'] = frequencia
+                    break
     else:
         params['vol_alvo'] = 0.0
 
