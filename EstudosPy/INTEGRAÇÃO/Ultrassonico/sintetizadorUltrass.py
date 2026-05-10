@@ -12,7 +12,7 @@ params = {
     'freq_alvo': 261.63,
     'freq_atual': 261.63,
     'vol_alvo': 0.0,
-    'vol_atual': 0.0,
+    'vol_atual': 0.0,        
     'fase': 0.0
 }
 
