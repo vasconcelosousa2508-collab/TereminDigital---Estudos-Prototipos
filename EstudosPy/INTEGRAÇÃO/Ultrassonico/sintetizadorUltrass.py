@@ -75,19 +75,19 @@ def ao_pressionar(key):
     
 with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem):
     with keyboard.Listener(on_press=ao_pressionar) as listener:
-        print("Sintetizador rodando... Pressione ESC para sair.")
+        print("Sintetizador Ultrassônico Ativo! (ESC para sair)")
         try:
             while listener.running:
-                linha = porta.readline().decode('utf-8', errors='ignore').strip()
+                linha = porta_serial.readline().decode('utf-8', errors='ignore').strip()
                 dados = linha.split(',')
                 
                 if len(dados) == 2: 
-                    v1, v2 = dados[0], dados[1]
-                    if v1.isdigit() and v2.isdigit():
-                        try:
-                            print(f"Freq: {v1} | Vol: {v2}")
-                            processar(int(v1), int(v2))
-                        except ValueError:
-                            continue
+                    v1_str, v2_str = dados[0], dados[1]
+                    if v1_str.isdigit() and v2_str.isdigit():
+                        v1, v2 = int(v1_str), int(v2_str)
+                        print(f"Dist1 (Vol): {v1}cm | Dist2 (Nota): {v2}cm")
+                        processar(v1, v2)
         except Exception as e:
-            print(f"\nOcorreu um erro: {e}")
+            print(f"Erro no loop: {e}")
+        finally:
+            porta_serial.close()
