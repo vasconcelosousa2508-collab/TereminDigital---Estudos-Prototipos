@@ -30,19 +30,19 @@ stream = p.open(
     frames_per_buffer=CHUNK
 )
 
-# variable for plotting
-x = np.arange(0, 2 * CHUNK, 2)
+# variable for plotting (X agora vai de 0 até 2047, correspondendo perfeitamente aos dados)
+x = np.arange(0, CHUNK)
 
-# create a line object with random data
-line, = ax.plot(x, np.random.rand(CHUNK), '-', lw=2)
+# create a line object with zeros instead of random numbers
+line, = ax.plot(x, np.zeros(CHUNK), '-', lw=2)
 
 # basic formatting for the axes
 ax.set_title('AUDIO WAVEFORM')
 ax.set_xlabel('samples')
 ax.set_ylabel('volume')
-ax.set_ylim(0, 255)
-ax.set_xlim(0, 2 * CHUNK)
-plt.setp(ax, xticks=[0, CHUNK, 2 * CHUNK], yticks=[0, 128, 255])
+ax.set_ylim(-32768, 32767)
+ax.set_xlim(0, CHUNK)
+plt.setp(ax, xticks=[0, CHUNK//2, CHUNK], yticks=[-32768, 0, 32767])
 
 # show the plot
 plt.show(block=False)
