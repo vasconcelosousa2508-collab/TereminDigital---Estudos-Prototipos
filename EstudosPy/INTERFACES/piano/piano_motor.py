@@ -6,7 +6,7 @@ from queue import Queue
 
 # --- CONFIGURAÇÕES ---
 amostragem = 44100
-CHUNK = 1024 * 2 # Tamanho 
+CHUNK = 1024 * 2 
 
 params = {
     'freq': 440.0,
