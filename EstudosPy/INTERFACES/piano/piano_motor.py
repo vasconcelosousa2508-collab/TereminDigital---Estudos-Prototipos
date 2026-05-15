@@ -65,14 +65,16 @@ def ao_soltar(key):
 with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem, blocksize=CHUNK):
     with keyboard.Listener(on_press=ao_pressionar, on_release=ao_soltar) as listener:
         while listener.running:
-            if not fila_onda.empty():
-                #  dados recentes da fila
-                dados_da_onda = fila_onda.get()
+            dados_da_onda = None
+            while not fila_onda.empty():
+                dados_da_onda = fila_onda.get() 
+            
+            
+            if dados_da_onda is not None:
                 line.set_ydata(dados_da_onda)
                 
-                # atualiza a tela
-                fig.canvas.draw()
-                fig.canvas.flush_events()
-            
-            # taxa de atualização do gráfico 
-            plt.pause(0.01)
+                try:
+                    fig.canvas.draw_idle() 
+                    fig.canvas.flush_events() 
+                except:
+                    break 
