@@ -78,7 +78,7 @@ class BarraVolumeApp(ctk.CTk):
         self.configure(fg_color="#0b032c") 
         
         # Texto indicador
-        self.label = ctk.CTkLabel(self, text="Vol", font=("Arial", 14, "bold"), text_color="#eb68a6")
+        self.label = ctk.CTkLabel(self, text="Vol", font=("Arial", 14, "bold"), text_color="#ffffff")
         self.label.pack(pady=(40, 5))
         
         # Frame horizontal para segurar os 10 blocos
