@@ -12,6 +12,7 @@ params = {
     'freq': 440.0,
     'vol_alvo': 0.0,
     'vol_atual': 0.0,
+    'vol_maximo': 1.0,
     'fase': 0
 }
 
