@@ -81,46 +81,46 @@ class BarraVolumeApp(ctk.CTk):
         self.label = ctk.CTkLabel(self, text="Vol", font=("Arial", 14, "bold"), text_color="#ffffff")
         self.label.pack(pady=(40, 5))
         
-        # Frame horizontal para segurar os 10 blocos
+        # Frame horizontal ==> 10 blocos
         self.frame_vu = ctk.CTkFrame(self, fg_color="transparent")
         self.frame_vu.pack(pady=10)
         
-        # Criando os 10 blocos dinamicamente
+        # dinamico
         self.blocos = []
         for i in range(10):
             bloco = ctk.CTkFrame(self.frame_vu, width=25, height=35, corner_radius=4, fg_color="#0b032c")
             bloco.pack(side="left", padx=3)
             self.blocos.append(bloco)
             
-        # Inicia o relógio de atualização em tempo real
+        # atualização tempo real
         self.atualizar_visual()
 
     def atualizar_visual(self):
         vol_atual = params['vol_atual']
         
-        # Varre cada um dos 10 blocos mudando a cor deles
+        # a cada 10 blocos mudando cor 
         for i in range(10):
             inicio_bloco = i * 0.1
             nova_cor = calcular_fade_cor(vol_atual, inicio_bloco)
             self.blocos[i].configure(fg_color=nova_cor)
             
-        # Agenda a próxima atualização para daqui a 15 milissegundos
+        
         self.after(15, self.atualizar_visual)
 
-# --- INICIALIZAÇÃO DO PROGRAMA ---
+# --- PROGRAMA ---
 if __name__ == "__main__":
-    # 1. Liga o motor de som
+    # som
     stream = sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem)
     stream.start()
     
-    # 2. Liga o teclado em uma Thread paralela (Impede que o pynput congele a interface)
+    # teclado em uma Thread paralela 
     ouvinte = keyboard.Listener(on_press=ao_pressionar, on_release=ao_soltar)
     thread_teclado = threading.Thread(target=ouvinte.start, daemon=True)
     thread_teclado.start()
     
-    # 3. Abre a Janela do CustomTkinter
+    # ctk
     app = BarraVolumeApp()
     app.mainloop()
     
-    # Desliga o som ao fechar a janela
+    # Desliga o som 
     stream.stop()
