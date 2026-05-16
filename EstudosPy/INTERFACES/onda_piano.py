@@ -20,6 +20,11 @@ notas = {
     'g': 392.00, 'h': 440.00, 'j': 493.88, 'k': 523.25
 }
 
+volumes = {
+    '1': 0.1, '2': 0.2, '3': 0.3, '4': 0.4, '5': 0.5, '6': 0.6, '7': 0.7, '8': 0.8, '9': 0.9, '0': 1.0,
+    'z': 0.15, 'x': 0.25, 'c': 0.35, 'v': 0.45, 'b': 0.55, 'n': 0.65, 'm': 0.75, ',': 0.85, '.': 0.95, '/': 0.0
+} 
+
 fila_onda = Queue()
 
 # --- MOTOR DE ÁUDIO ---
@@ -52,16 +57,24 @@ plt.show(block=False)
 
 def ao_pressionar(key):
     try:
-        if key.char in notas:
-            params['freq'] = notas[key.char]
-            params['vol_alvo'] = 0.8 
+        letra = key.char
+        if letra in volumes:
+            params['vol_maximo'] = volumes[letra]
+        elif letra in notas:
+            params['freq'] = notas[letra]
+            params['vol_alvo'] = params['vol_maximo']
     except AttributeError: pass
 
 def ao_soltar(key):
-    params['vol_alvo'] = 0.0
-    if key == keyboard.Key.esc: return False
+    try: 
+        if key.char in notas:
+            params['vol_alvo'] = 0.0
+    except AttributeError: pass
+    if key == keyboard.Key.esc:
+        app.destroy() 
+        return False
 
-# --- LOOP DE  ---
+# --- LOOP ---
 with sd.OutputStream(channels=1, callback=audio_callback, samplerate=amostragem, blocksize=CHUNK):
     with keyboard.Listener(on_press=ao_pressionar, on_release=ao_soltar) as listener:
         while listener.running:
