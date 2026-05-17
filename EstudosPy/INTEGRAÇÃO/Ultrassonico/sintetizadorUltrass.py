@@ -6,7 +6,7 @@ from pynput import keyboard
 # --- CONFIGURAÇÕES ---
 porta_config = '/dev/ttyACM0' # String para a conexão inicial
 amostragem = 44100
-limiteDistancia = 45 
+limiteDistancia = 30 
 volumeMaximo = 1.0
 
 params = {
@@ -17,15 +17,15 @@ params = {
     'fase': 0.0
 }
 
-# Escala Pentatônica espalhada em 45cm
 ESCALA_MUSICAL = [
-    (8, 220.00),   # Lá
-    (14, 261.63),  # Dó
-    (20, 293.66),  # Ré
-    (26, 329.63),  # Mi
-    (32, 392.00),  # Sol
-    (38, 440.00),  # Lá
-    (float('inf'), 523.25) # Dó
+    (8,  261.63),  # Dó (C4)
+    (12, 293.66),  # Ré (D4)
+    (16, 329.63),  # Mi (E4)
+    (20, 349.23),  # Fá (F4)  
+    (24, 392.00),  # Sol (G4)
+    (28, 440.00),  # Lá (A4)
+    (32, 493.88),  # Si (B4)
+    (float('inf'), 523.25) # Dó Agudo (C5)
 ]
 
 try:
